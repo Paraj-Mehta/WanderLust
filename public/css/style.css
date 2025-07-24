@@ -1,5 +1,12 @@
 body{
     font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container{
+    flex: 1;
 }
 
 .navbar{
@@ -88,4 +95,36 @@ body{
 .card-img-overlay:hover{
     background-color: white;
     opacity: 0.2;
+}
+
+.add-btn{
+    background-color: #fe424f !important;
+    border: none !important;
+    color: white !important;
+}
+
+.show-img{
+    height: 40vh;
+}
+
+.showCard{
+    border-radius: 1rem !important;
+    border: none !important;
+    box-shadow: none;
+
+}
+
+.showCard:hover{
+    transform: none;
+    box-shadow: none;
+}
+
+.btns{
+    display: flex;
+    justify-content: center;
+    width: 55%;
+}
+
+.btn{
+    margin: 5px 5px 20px 5px;
 }
