@@ -20,8 +20,8 @@ app.set("view-engine","ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
-app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
+app.engine("ejs", ejsMate);
 
 // Landing Page 
 app.get("/",(req,res)=>{
@@ -85,21 +85,3 @@ app.listen(8080, ()=>{
     console.log("app is listening on: localhost:8080/")
 })
 
-
-
-
-
-
-// app.get("/testListing" , async (req,res)=>{
-//     let sampleListing = new Listing({
-//         title : "My New Villa",
-//         description : "By the beach",
-//         price: 1200,
-//         location: "Calangute, Goa",
-//         country: "India"
-//     });
-
-//     await sampleListing.save();
-//     console.log("sample saved");
-//     res.send("Successful testing");
-// })
