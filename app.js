@@ -6,6 +6,7 @@ const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
+const {ListingSchema} = require("./schema.js");
 const app = express();
 
 async function main(){
@@ -25,6 +26,18 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,"/public")));
 app.engine("ejs", ejsMate);
 
+
+// Validate function for server side validation
+const ValidateListing = (req,res,next)=>{
+    // validating listing schema using joi
+    let {error} = ListingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el)=> el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    }else{
+        next();
+    }
+}
 
 // Landing Page 
 app.get("/",(req,res)=>{
@@ -56,10 +69,7 @@ app.get("/listings/:id", wrapAsync(async (req,res)=>{
 
 
 // All Listings page after adding a new Listing
-app.post("/listings", wrapAsync(async (req,res)=>{
-    if(!req.body.listing){
-        throw new ExpressError(400, "Send Valid data");
-    }
+app.post("/listings", ValidateListing, wrapAsync(async (req,res)=>{
     let newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings")
@@ -77,7 +87,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req,res)=>{
 
 
 // Listing after it is edited 
-app.put("/listings/:id", wrapAsync(async (req, res, next)=>{
+app.put("/listings/:id", ValidateListing, wrapAsync(async (req, res, next)=>{
         let {id} = req.params;
         await Listing.findByIdAndUpdate(id ,{...req.body.listing}); 
         res.redirect(`/listings/${id}`);
@@ -98,10 +108,11 @@ app.use((req, res, next)=>{
     next(new ExpressError(404, "PAGE NOT FOUND"));
 });
 
+
 // Error middelware
 app.use((err, req, res, next)=>{
     let {statusCode=500, message="Something went wrong"} = err
-    res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs", {message})
 })
 
 
