@@ -1,32 +1,57 @@
 <% layout("/layouts/boilerplate") %>
 <body>
+    <!-- Display the content of a listing -->
     <div class="row">
         <div class="col-8 offset-2 showCard ">
                <br>
-    <h2> Listing Details:</h2> 
-    <br>
+                <h2> <b><%= item.title %></b> </h2> 
+                <br>
         </div>
 
-    <div class="card col-6 offset-2 showCard">
+        <!-- Image  -->
+        <div class="card col-6 offset-2 showCard">
         <img src="<%= item.image %>" class="card-img-top show-img" alt="...">
-  <div class="card-body">
-    <p class="card-text">
-       <b> <%= item.title %>  </b><br>
-       <%= item.description %> <br>
-       &#8377; <%= item.price.toLocaleString("en-IN") %> <br>
-       <%= item.location %> <br>
-       <%= item.country %> <br>
+        
+        <!-- Description -->
+        <div class="card-body">
+        <p class="card-text"><br>
+        <%= item.description %> <br>
+        &#8377; <%= item.price.toLocaleString("en-IN") %> <br>
+        <%= item.location %> <br>
+        <%= item.country %> <br>
 
-    </p>
-  </div>
+        </p>
+        </div>
+        </div>
     </div>
-</div>
-<div class="btns">
-    <a href="/listings/<%= item._id %>/edit"><button class="btn add-btn">Edit this Listing</button></a>
-    <form method="post" action="/listings/<%= item._id %>?_method=DELETE">
-        <button class="btn btn-dark">Delete</button>
-    </form>
-</div>
 
+    <!-- Buttons -->
+    <div class="btns">
+        <a href="/listings/<%= item._id %>/edit"><button class="btn add-btn">Edit this Listing</button></a>
+        <form method="post" action="/listings/<%= item._id %>?_method=DELETE">
+            <button class="btn btn-dark">Delete</button>
+        </form>
+    </div>
+    <hr>
 
+    <!-- Review Form  -->
+    <div class="col-8 offset-2 mb-3">
+        <h4>Leave a Review</h4>
+        <form action="/listings/<%= item.id %>/reviews" method="post">
+            <!-- For Ratings -->
+            <div class="mb-3 mt-3">
+                <label for="rating" class="form-label"> Rating</label>
+                <input type="range" min="1" max="5" id="rating" name="review[rating]">
+            </div>
+
+            <!-- For Comments -->
+            <div class="mb-3 mt-3">
+                <label for="comment" class="form-label">Comments</label>
+                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn btn-outline-dark">Submit</button>
+        </form>
+    </div>
 </body>

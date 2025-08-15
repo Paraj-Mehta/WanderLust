@@ -6,7 +6,8 @@ const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
-const {ListingSchema} = require("./schema.js");
+const {ListingSchema} = require("./schema.js")
+const Review = require("./models/review.js")
 const app = express();
 
 async function main(){
@@ -38,6 +39,7 @@ const ValidateListing = (req,res,next)=>{
         next();
     }
 }
+
 
 // Landing Page 
 app.get("/",(req,res)=>{
@@ -102,6 +104,18 @@ app.delete("/listings/:id", wrapAsync(async (req,res)=>{
     res.redirect("/listings");
 })
 )
+
+// Reviews
+app.post("/listings/:id/reviews", async(req,res)=>{
+    let listing = await Listing.findById(req.params.id)
+    let newReview = new Review(req.body.review)
+
+    listing.reviews.push(newReview)
+    await newReview.save()
+    await listing.save()
+
+    res.redirect(`/listings/${listing._id}`)
+})
 
 
 app.use((req, res, next)=>{
