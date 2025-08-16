@@ -37,7 +37,7 @@
     <!-- Review Form  -->
     <div class="col-8 offset-2 mb-3">
         <h4>Leave a Review</h4>
-        <form action="/listings/<%= item.id %>/reviews" method="post">
+        <form action="/listings/<%= item.id %>/reviews" method="post" class="needs-validation" novalidate>
             <!-- For Ratings -->
             <div class="mb-3 mt-3">
                 <label for="rating" class="form-label"> Rating</label>
@@ -47,11 +47,33 @@
             <!-- For Comments -->
             <div class="mb-3 mt-3">
                 <label for="comment" class="form-label">Comments</label>
-                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control"></textarea>
+                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                <div class="invalid-feedback">
+                Please add a comment.
+                </div>
             </div>
+
 
             <!-- Submit Button -->
             <button class="btn btn-outline-dark">Submit</button>
         </form>
+
+        <hr>
+        <!-- Show reviews -->
+        <p><b>All Reviews</b></p>
+        <div class="row">
+        <% for(review of item.reviews){ %>
+        <div class="card col-5 ms-3 mb-3">
+            <div class="card-body">
+                <h5 class="card-title">john Doe</h5>
+                <p class="card-text"><%= review.comment %></p>
+                <p class="card-text"><%= review.rating %> stars</p>
+                <form action="/listings/<%= item.id %>/reviews/<%= review.id %>?_method=DELETE" method="post">
+                    <button class="btn btn-sm btn-dark">Delete</button>
+                </form>
+            </div>
+        </div>
+        <% } %>
+        </div>
     </div>
 </body>

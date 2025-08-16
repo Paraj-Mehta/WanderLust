@@ -1,14 +1,15 @@
 const express = require("express")
 const mongoose = require("mongoose")
-const Listing = require("./models/listing.js")
 const path = require("path");
 const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
-const {ListingSchema} = require("./schema.js")
-const Review = require("./models/review.js")
 const app = express();
+const listing = require("./routes/listing.js");
+const review = require("./routes/review.js");
+const session = require("express-session");
+const sessionOptions = require("./secret.js");
+const flash = require("connect-flash");
 
 async function main(){
     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
@@ -27,97 +28,25 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname,"/public")));
 app.engine("ejs", ejsMate);
 
-
-// Validate function for server side validation
-const ValidateListing = (req,res,next)=>{
-    // validating listing schema using joi
-    let {error} = ListingSchema.validate(req.body);
-    if(error){
-        let errMsg = error.details.map((el)=> el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }else{
-        next();
-    }
-}
-
-
 // Landing Page 
 app.get("/",(req,res)=>{
     res.send("Server is working");
 })
 
+app.use(session(sessionOptions));
+app.use(flash());
 
-// Home Page for All listings
-app.get("/listings", wrapAsync(async(req,res)=>{
-    const allListing = await Listing.find({});
-    res.render("listings/index.ejs" , {allListing});
-})
-)
-
-
-// To add a new Listing form
-app.get("/listings/add",(req,res)=>{
-    res.render("listings/new.ejs");
+app.use((req,res,next)=>{
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
 })
 
-
-// Show item page
-app.get("/listings/:id", wrapAsync(async (req,res)=>{
-    let {id} = req.params;
-    const item = await Listing.findById(id);
-    res.render("listings/show.ejs", {item});
-})
-)
+app.use("/listings", listing);
+app.use("/listings/:id/reviews", review);
 
 
-// All Listings page after adding a new Listing
-app.post("/listings", ValidateListing, wrapAsync(async (req,res)=>{
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings")
-})
-)
-
-
-// To edit Listing form
-app.get("/listings/:id/edit", wrapAsync(async (req,res)=>{
-    let {id} = req.params;
-    const item = await Listing.findById(id);
-    res.render("listings/edit.ejs", {item});
-})
-)
-
-
-// Listing after it is edited 
-app.put("/listings/:id", ValidateListing, wrapAsync(async (req, res, next)=>{
-        let {id} = req.params;
-        await Listing.findByIdAndUpdate(id ,{...req.body.listing}); 
-        res.redirect(`/listings/${id}`);
-    })
-)
-
-
-// delete route 
-app.delete("/listings/:id", wrapAsync(async (req,res)=>{
-    let {id} = req.params;
-    await Listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-})
-)
-
-// Reviews
-app.post("/listings/:id/reviews", async(req,res)=>{
-    let listing = await Listing.findById(req.params.id)
-    let newReview = new Review(req.body.review)
-
-    listing.reviews.push(newReview)
-    await newReview.save()
-    await listing.save()
-
-    res.redirect(`/listings/${listing._id}`)
-})
-
-
+// Found not found error handling (if someone sends a req on a not recoginsed path)
 app.use((req, res, next)=>{
     next(new ExpressError(404, "PAGE NOT FOUND"));
 });
