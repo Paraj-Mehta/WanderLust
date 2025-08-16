@@ -8,11 +8,25 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+      <!-- left side content -->
       <div class="navbar-nav">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/listings">All Listings</a>
         <a class="nav-link" href="/listings/add">Add new Listing</a>
       </div>
+
+      <!-- right side content -->
+      <div class="navbar-nav ms-auto">
+        <% if(!currUser){ %>
+        <a class="nav-link" href="/signup">Sign Up</a>
+        <a class="nav-link" href="/login">Login</a>
+        <% } %>
+        <% if(currUser){ %>
+        <a class="nav-link" href="/logout">Log Out</a>
+        <% } %>
+      </div>
+
     </div>
   </div>
 </nav>
