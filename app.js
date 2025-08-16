@@ -8,7 +8,7 @@ const app = express();
 const listing = require("./routes/listing.js");
 const review = require("./routes/review.js");
 const session = require("express-session");
-const sessionOptions = require("./secret.js");
+const sessionOptions = require("./init/secret.js");
 const flash = require("connect-flash");
 
 async function main(){
