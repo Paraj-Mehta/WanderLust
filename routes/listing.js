@@ -3,6 +3,7 @@ const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync");
 const Listing = require("../models/listing.js");
 const {isLoggedIn , isOwner, ValidateListing} = require("../middleware.js");
+const upload = require("../upload.js")
 
 // Importing contollers
 const listingController = require("../controllers/listings.js");
@@ -10,7 +11,7 @@ const listingController = require("../controllers/listings.js");
 
 router.route("/")
     .get( wrapAsync(listingController.index))
-    .post( isLoggedIn, ValidateListing, wrapAsync(listingController.newListing))
+    .post( isLoggedIn, ValidateListing, upload.single('listing[image]'), wrapAsync(listingController.newListing))
 
 // To add a new Listing form
 router.get("/add", isLoggedIn ,listingController.renderNewForm)

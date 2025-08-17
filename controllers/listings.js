@@ -1,4 +1,6 @@
 const Listing = require("../models/listing.js")
+const cloudinary = require("../cloudinaryConfig");
+const streamifier = require("streamifier");
 
 
 // Function to show HOME page
@@ -28,11 +30,33 @@ module.exports.showListing = async (req,res)=>{
 
 // Function to render listing after adding a new listing
 module.exports.newListing = async (req,res)=>{
-    let newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash("success", "New Listing added!")
-    res.redirect("/listings")
+    try {
+        let newListing = new Listing(req.body.listing);
+        newListing.owner = req.user._id;
+
+        if (req.file) {
+        // Convert buffer to stream and upload to Cloudinary
+        const result = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+            { folder: "Wanderlust" }, //  Cloudinary folder
+            (error, result) => {
+                if (result) resolve(result);
+                else reject(error);
+            }
+            );
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+
+        newListing.image = result.secure_url; // save URL in DB
+        }
+
+        await newListing.save();
+        req.flash("success", "New Listing added!")
+        res.redirect("/listings")
+        }catch (err) {
+        req.flash("error", err.message);
+        res.redirect("/listings");
+  }
 }
 
 // Funtion to render edit listings form 
