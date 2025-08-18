@@ -10,9 +10,8 @@ const listingSchema = new Schema({
     },
     description : String,
     image: { 
-        type: String,
-        default: "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg",
-        set: (v) => v === "" ? "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg" : v,
+        url: String,
+        filename: String
     },
     price : Number,
     location : String,

@@ -8,7 +8,7 @@
     <br>
 
     <!-- Edit Listing Form -->
-    <form method="post" action="/listings/<%= item._id %>?_method=PUT" novalidate class="needs-validation">
+    <form method="post" action="/listings/<%= item._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
 
         <!-- Title -->
         <div class="mb-3">
@@ -24,10 +24,16 @@
         <div class="invalid-feedback">Description is required</div>
         </div>
 
+        <!-- Image preview -->
+        <div class="mb-3">
+            Original image: <br>
+            <img src="<%= originalUrl %>" >
+        </div>
+
         <!-- Image -->
         <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input type="text" name="listing[image]" placeholder="Enter image URL" value ="<%= item.image %>" class="form-control" id="image" required>
+        <label for="image" class="form-label">Upload new Image</label>
+        <input type="file" name="listing[image]" placeholder="Upload New image" class="form-control" id="image">
         <div class="invalid-feedback">Image link is required</div>
         </div>
 

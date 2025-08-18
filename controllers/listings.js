@@ -47,7 +47,7 @@ module.exports.newListing = async (req,res)=>{
             streamifier.createReadStream(req.file.buffer).pipe(stream);
         });
 
-        newListing.image = result.secure_url; // save URL in DB
+        newListing.image ={ url: result.secure_url,filename: result.original_filename}; //save to DB
         }
 
         await newListing.save();
@@ -63,17 +63,39 @@ module.exports.newListing = async (req,res)=>{
 module.exports.renderEditForm = async (req,res)=>{
     let {id} = req.params;
     const item = await Listing.findById(id);
+
     if(!item){
         req.flash("error", "Listing doesnt exist!")
         return res.redirect("/listings");
     }
-    res.render("listings/edit.ejs", {item});
+
+    let originalUrl = item.image.url;
+    originalUrl = originalUrl.replace("/upload", "/upload/w_250")
+    res.render("listings/edit.ejs", {item, originalUrl});
 }
 
 // Function to update the listing
 module.exports.updateListing = async (req, res, next)=>{
     let {id} = req.params;
-    await Listing.findByIdAndUpdate(id ,{...req.body.listing}); 
+    let listing = await Listing.findByIdAndUpdate(id ,{...req.body.listing}); 
+
+            if (req.file) {
+        // Convert buffer to stream and upload to Cloudinary
+        const result = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+            { folder: "Wanderlust" }, //  Cloudinary folder
+            (error, result) => {
+                if (result) resolve(result);
+                else reject(error);
+            }
+            );
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+            });
+
+            listing.image ={ url: result.secure_url,filename: result.original_filename};   // save filename in DB
+            await listing.save()
+        }
+
     req.flash("success", "Listing Updated!")
     res.redirect(`/listings/${id}`);
 }

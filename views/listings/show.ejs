@@ -10,7 +10,7 @@
 
         <!-- Image  -->
         <div class="card col-6 offset-2 showCard">
-        <img src="<%= item.image %>" class="card-img-top show-img" alt="...">
+        <img src="<%= item.image.url %>" class="card-img-top show-img" alt="...">
         
         <!-- Description -->
         <div class="card-body">
@@ -32,8 +32,8 @@
             <button class="btn btn-dark">Delete</button>
         </form>
     </div>
-    <% } %>
     <hr>
+    <% } %>
 
     <!-- Review Form  -->
     <div class="col-8 offset-2 mb-3">
@@ -77,11 +77,13 @@
             <!-- Submit Button -->
             <button class="btn btn-outline-dark">Submit</button>
         </form>
-        <hr>
         <% } %>
+
         <!-- Show reviews -->
-        <p><b>All Reviews</b></p>
+         <% if(item.reviews.length > 0){ %>
+         <hr>
         <div class="row">
+        <p><b>All Reviews</b></p>
         <% for(review of item.reviews){ %>
         <div class="card col-5 ms-3 mb-3">
             <div class="card-body">
@@ -95,5 +97,6 @@
         </div>
         <% } %>
         </div>
+        <% } %>
     </div>
 </body>
