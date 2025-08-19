@@ -5,7 +5,17 @@ const streamifier = require("streamifier");
 
 // Function to show HOME page
 module.exports.index = async(req,res)=>{
-    const allListing = await Listing.find({});
+  const { category, location } = req.query; 
+
+  let filter = {};
+  if (category) {
+    filter.categories = category;
+  }
+
+  if (location) {
+    filter.location = { $regex: location, $options: "i" };
+  }
+    const allListing = await Listing.find(filter);
     res.render("listings/index.ejs" , {allListing});
 }
 
@@ -31,7 +41,16 @@ module.exports.showListing = async (req,res)=>{
 // Function to render listing after adding a new listing
 module.exports.newListing = async (req,res)=>{
     try {
-        let newListing = new Listing(req.body.listing);
+        let {listing} = req.body;
+        let categories = listing.categories;
+
+        if(categories){
+            categories = Array.isArray(categories) ? categories : [categories];
+        }else{
+            categories = [];
+        }
+
+        let newListing = new Listing({...listing, categories});
         newListing.owner = req.user._id;
 
         if (req.file) {

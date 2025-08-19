@@ -7,7 +7,12 @@ module.exports.ListingSchema = Joi.object({
         image:Joi.string().allow("",null),
         price:Joi.number().required(),
         location: Joi.string().required(),
-        country: Joi.string().required()
+        country: Joi.string().required(),
+        categories: Joi.alternatives()
+        .try(
+                Joi.string(),                // in case only one checkbox is checked (Express sends it as a string)
+                Joi.array().items(Joi.string())  // multiple checkboxes → array of strings
+        ).optional()
 
     }).required()
 })

@@ -1,5 +1,10 @@
 <% layout("/layouts/boilerplate") %>
-<body>
+<style>
+    .options{
+        margin-right: 0.75rem;
+    }
+</style>
+
 
     <div class="row mt-3">
         <div class="col-8 offset-2">
@@ -54,6 +59,42 @@
         <div class="invalid-feedback">Country is required</div>
         </div>
 
+        <!-- Categories -->
+         <div class="mb3">
+            <p>Add Categories for your listing</p>
+
+            <input type="checkbox" name="listing[categories]" id="Trending" value="Trending" >
+            <label for="Trending" class="options">Trending</label>
+            
+            <input type="checkbox" name="listing[categories]" id="Rooms" value="Rooms">
+            <label for="Rooms" class="options">Rooms</label>
+            
+            <input type="checkbox" name="listing[categories]" id="Iconic" value="Iconic">
+            <label for="Iconic" class="options">Iconic Place</label>
+            
+            <input type="checkbox" name="listing[categories]" id="Pools" value="Pools">
+            <label for="Pools" class="options">Pools</label>
+            
+            <input type="checkbox" name="listing[categories]" id="Farms" value="Farms">
+            <label for="Farms" class="options">Farms</label>
+            
+            <input type="checkbox" name="listing[categories]" id="Camping" value="Camping">
+            <label for="Camping" class="options">Camping</label>
+
+            <input type="checkbox" name="listing[categories]" id="Less Explored" value="Less Explored">
+            <label for="Less Explored" class="options">Less Explored</label>
+
+            <input type="checkbox" name="listing[categories]" id="Domes" value="Domes">
+            <label for="Domes" class="options">Domes</label>
+
+            <input type="checkbox" name="listing[categories]" id="Beach" value="Beach">
+            <label for="Beach" class="options">Beach</label>
+
+            <input type="checkbox" name="listing[categories]" id="Arctic" value="Arctic">
+            <label for="Arctic" class="options">Arctic</label>
+
+         </div>
+
         <!-- Add Button -->
         <br>
         <button class="btn add-btn mt-3">Add</button>
@@ -62,4 +103,3 @@
     </form>
     </div>
     </div>
-</body>

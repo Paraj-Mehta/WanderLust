@@ -43,9 +43,9 @@ app.use(express.static(path.join(__dirname,"/public")));
 app.engine("ejs", ejsMate);
 
 // Landing Page 
-app.get("/",(req,res)=>{
-    res.send("Server is working");
-})
+// app.get("/",(req,res)=>{
+//     res.send("Server is working");
+// })
 
 
 // Session and flash middlewares
